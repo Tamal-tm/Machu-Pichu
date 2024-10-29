@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Responsive Image Slider</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      font-family: Arial, sans-serif;
+      background: linear-gradient(to bottom right, #ff7e5f, #feb47b);
+    }
+
+    .slider-container {
+      position: relative;
+      max-width: 800px;
+      width: 90%;
+      margin: auto;
+      overflow: hidden;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    .slider-wrapper {
+      display: flex;
+      transition: transform 0.5s ease-in-out;
+    }
+
+    .slide {
+      min-width: 100%;
+      position: relative;
+      display: none;
+    }
+
+    .slide img {
+      width: 100%;
+      display: block;
+      border-radius: 10px;
+    }
+
+    .slide.active {
+      display: block;
+    }
+
+    .caption {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      color: #fff;
+      font-size: 1.2rem;
+      background-color: rgba(0, 0, 0, 0.5);
+      padding: 8px 12px;
+      border-radius: 5px;
+    }
+
+    /* Navigation Buttons */
+    .prev, .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      width: 40px;
+      height: 40px;
+      margin-top: -20px;
+      color: white;
+      font-weight: bold;
+      font-size: 24px;
+      border-radius: 50%;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.3s ease;
+    }
+
+    .next {
+      right: 10px;
+    }
+
+    .prev {
+      left: 10px;
+    }
+
+    .prev:hover, .next:hover {
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    /* Thumbnails */
+    .thumbnails {
+      display: flex;
+      justify-content: center;
+      margin: 15px 0;
+    }
+
+    .thumbnails img {
+      width: 50px;
+      height: 50px;
+      object-fit: cover;
+      border-radius: 4px;
+      margin: 0 5px;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    .thumbnails img.active-thumb {
+      border: 2px solid #333;
+    }
+
+    .thumbnails img:hover {
+      transform: scale(1.1);
+    }
+
+    /* Responsive Design */
+    @media (max-width: 600px) {
+      .caption {
+        font-size: 1rem;
+        padding: 6px 10px;
+      }
+      .prev, .next {
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+      }
+      .thumbnails img {
+        width: 40px;
+        height: 40px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Slider Container -->
+  <div class="slider-container">
+    <!-- Slider Wrapper for Images -->
+    <div class="slider-wrapper">
+      <div class="slide active">
+        <img src="images (2).jpg" alt="Description 1">
+        <div class="caption">Landscape view</div>
+      </div>
+      <div class="slide">
+        <img src="images (3).jpg" alt="Description 2">
+        <div class="caption">Frontal view</div>
+      </div>
+      <div class="slide">
+        <img src="machu-picchu-ruins.jpg" alt="Description 3">
+        <div class="caption">Drone view</div>
+      </div>
+      <!-- Add more slides as needed -->
+    </div>
+
+    <!-- Navigation Controls -->
+    <button class="prev">&#10094;</button>
+    <button class="next">&#10095;</button>
+
+    <!-- Thumbnail Navigation -->
+    <div class="thumbnails">
+      <img src="images (2).jpg" alt="Thumbnail 1" data-index="0" class="active-thumb">
+      <img src="images (3).jpg" alt="Thumbnail 2" data-index="1">
+      <img src="machu-picchu-ruins.jpg" alt="Thumbnail 3" data-index="2">
+      <!-- Add more thumbnails as needed -->
+    </div>
+  </div>
+
+  <script>
+    let currentIndex = 0;
+    const slides = document.querySelectorAll(".slide");
+    const thumbnails = document.querySelectorAll(".thumbnails img");
+    const nextButton = document.querySelector(".next");
+    const prevButton = document.querySelector(".prev");
+
+    function showSlide(index) {
+      slides.forEach((slide, i) => {
+        slide.classList.remove("active");
+        thumbnails[i].classList.remove("active-thumb");
+      });
+      slides[index].classList.add("active");
+      thumbnails[index].classList.add("active-thumb");
+    }
+
+    function nextSlide() {
+      currentIndex = (currentIndex + 1) % slides.length;
+      showSlide(currentIndex);
+    }
+
+    function prevSlide() {
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+      showSlide(currentIndex);
+    }
+
+    thumbnails.forEach((thumbnail, index) => {
+      thumbnail.addEventListener("click", () => {
+        currentIndex = index;
+        showSlide(index);
+      });
+    });
+
+    nextButton.addEventListener("click", nextSlide);
+    prevButton.addEventListener("click", prevSlide);
+
+    // Auto-slide functionality
+    let autoSlideInterval = setInterval(nextSlide, 3000); // Change every 3 seconds
+
+    // Pause auto-slide on hover
+    document.querySelector(".slider-container").addEventListener("mouseover", () => {
+      clearInterval(autoSlideInterval);
+    });
+
+    document.querySelector(".slider-container").addEventListener("mouseout", () => {
+      autoSlideInterval = setInterval(nextSlide, 3000);
+    });
+
+    // Initialize the slider
+    showSlide(currentIndex);
+  </script>
+</body>
+</html>
